@@ -1,7 +1,10 @@
 from random import randint, choice
 from time import time
 
-level_list = []
+level_bounds = [ {'+':(1,25,1,25), '-':(1,25,1,24), '*':(2,5,1,5), '/':(1,10,5)},
+              {'+':(5,50,5,50), '-':(5,50,4,49), '*':(5,10,2,5), '/':(2,20,2,6)},
+              {'+':(5,100,5,100), '-':(5,100,4,99), '*':(10,20,2,10), '/':(2,40,3,10)} ]
+
 
 def isprime(n):
 
@@ -16,21 +19,17 @@ def isprime(n):
     return prime
 
 
-def int_selector(operation):
-     
-    if operation == '+':
+def int_selector(operation, current_level):
 
-        x, y = randint(1,10), randint(1,10) 
+    bounds = level_bounds[current_level][operation]
+    
+    if operation in ['+', '-', '*']:
+ 
+        x, y = randint(bounds[0], bounds[1]), randint(bounds[2], bounds[3])
 
-    elif operation == '*':
-
-        x, y = randint(1,10), randint(1,10) 
-
-    elif operation == '-':
-
-        x = randint(2,10)
-
-        y = randint(1,x-1)
+        if operation == '-':
+            if x < y:
+                x, y = y, x
 
     elif operation == '/':
 
@@ -38,13 +37,13 @@ def int_selector(operation):
 
         while prime == True:
 
-            x = randint(1,10)
+            x = randint(bounds[0], bounds[1])
 
             prime = isprime(x)
 
         div_list = []
 
-        for k in range(1,x):
+        for k in range(bounds[2],bounds[3]):
 
             if x % k == 0:
 
@@ -65,35 +64,36 @@ def round(operation, x, y, counter):
 
     while correct == False:
 
-        is_integer = False
+        try:
 
-        while is_integer == False:
+            n = int(input('Respuesta: '))
+            print()
 
-            try:
+            if n == int(eval(str(x) + operation + str(y))):
 
-                n = int(input('Respuesta: '))
+                print('Correcto')
                 print()
+                
+                correct = True
 
-                is_integer = True
+                stop = time()
 
-                if n == int(eval(str(x) + operation + str(y))):
+                latency = stop - start
 
-                    print('Correcto')
-                    print()
-                    
-                    correct = True
+                round_time += latency
 
-                    stop = time()
+                counter += 1
 
-                    latency = stop - start
-
-                    round_time += latency
-
-                    counter += 1
-
-            except Exception as error:
-                print('Necesito int, por dios')
+            else:
+                print('WRONG')
                 print()
+                continue
+
+        except Exception as error:
+            print('Necesito int, por dios')
+            print()
+            continue
+            
 
         return counter, round_time 
 
@@ -102,11 +102,17 @@ def main():
 
     op_list = ['+', '-', '*', '/']
 
-    last_level = 3
+    last_level = 2
 
-    current_level = 3
+    current_level = 0
 
     while current_level <= last_level:
+
+        print('---------------')
+        print('LEVEL', current_level+1)
+        print('---------------')
+        print()
+
 
         time_total = 0
 
@@ -116,7 +122,7 @@ def main():
 
             operation = choice(op_list)
 
-            x, y = int_selector(operation)
+            x, y = int_selector(operation, current_level)
 
             print('Que es', x, operation, y, '?')
             print()
@@ -124,6 +130,9 @@ def main():
             counter, round_time = round(operation, x, y, counter)
         
             time_total += round_time
+
+        print('Level', current_level+1, 'complete.')
+        print()
 
         current_level += 1
 
