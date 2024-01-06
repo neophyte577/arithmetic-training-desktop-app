@@ -1,7 +1,8 @@
 from random import randint, choice
 from time import time
 
-level_bounds = [ {'+':(1,25,1,25), '-':(1,25,1,24), '*':(2,5,1,5), '/':(1,10,5)},
+
+level_bounds = [ {'+':(1,25,1,25), '-':(1,25,1,24), '*':(2,5,1,5), '/':(1,10,1,5)},
               {'+':(5,50,5,50), '-':(5,50,4,49), '*':(5,10,2,5), '/':(2,20,2,6)},
               {'+':(5,100,5,100), '-':(5,100,4,99), '*':(10,20,2,10), '/':(2,40,3,10)} ]
 
@@ -23,7 +24,7 @@ def int_selector(operation, current_level):
 
     bounds = level_bounds[current_level][operation]
     
-    if operation in ['+', '-', '*']:
+    if operation in {'+', '-', '*'}:
  
         x, y = randint(bounds[0], bounds[1]), randint(bounds[2], bounds[3])
 
@@ -94,17 +95,18 @@ def round(operation, x, y, counter):
             print()
             continue
             
-
         return counter, round_time 
 
 
 def main():
 
-    op_list = ['+', '-', '*', '/']
+    operations = ('+', '-', '*', '/')
 
     last_level = 2
 
     current_level = 0
+
+    time_data = []
 
     while current_level <= last_level:
 
@@ -113,14 +115,15 @@ def main():
         print('---------------')
         print()
 
-
         time_total = 0
 
         counter = 0
 
+        level_times = []
+
         while counter < 3:
 
-            operation = choice(op_list)
+            operation = choice(operations)
 
             x, y = int_selector(operation, current_level)
 
@@ -129,11 +132,15 @@ def main():
 
             counter, round_time = round(operation, x, y, counter)
         
-            time_total += round_time
+            level_times.append(round_time)
+
+        time_data.append(level_times)
 
         print('Level', current_level+1, 'complete.')
         print()
 
         current_level += 1
+
+    print(time_data)
 
 main()
