@@ -1,29 +1,32 @@
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtGui import QDoubleValidator, QFont
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIntValidator, QFont
 from PySide6.QtWidgets import QWidget, QApplication, QMainWindow, QLineEdit, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
+from time import time
 import calculator
 import arithmetic
 
+
 class RoundWindow(QMainWindow):
 
-    def __init__(self, operand_1=420, operand_2=69, operation='+'):
+    def __init__(self, parent, operand_1=420, operand_2=69, operation='+'):
 
-        super().__init__()
+        super().__init__(parent)
 
         self.operand_1 = operand_1
         self.operand_2 = operand_2
         self.operation = operation
+        self.parent = parent
 
         self.expression = QLabel(str(operand_1) + ' ' +  operation + ' ' + str(operand_2))
-        self.expression.setFont(QFont('Helvetica', 15))
+        self.expression.setFont(QFont('Jokerman', 20))
         
         self.equals_sign = QLabel('=')
-        self.equals_sign.setFont(QFont('Helvetic', 15))
+        self.equals_sign.setFont(QFont('Jokerman', 20))
 
         self.submission_field = QLineEdit()
         self.submission_field.setFixedWidth(80)
-        self.submission_field.setFont(QFont('Helvetica', 15))
-        self.submission_field.setValidator(QDoubleValidator())
+        self.submission_field.setFont(QFont('Jokerman', 15))
+        self.submission_field.setValidator(QIntValidator())
         self.submission_field.grabKeyboard()
         self.submission_field.textChanged.connect(self.check_submission)
 
@@ -50,11 +53,18 @@ class RoundWindow(QMainWindow):
 
     def check_submission(self):
 
-        answer = str(eval(str(self.operand_1) + self.operation + str(self.operand_2)))
+        if self.submission_field.text().strip() != '':
 
-        if self.submission_field.text() == answer:
+            answer = eval(str(self.operand_1) + self.operation + str(self.operand_2))
 
-            print('alright')
+            if int(self.submission_field.text()) == answer:
+
+                self.parent.stop_time = time()
+                self.parent.round_times.append(self.parent.stop_time - self.parent.start_time) 
+                self.parent.round_counter += 1
+                self.close()
+                self.parent.next_round()
+
 
     def mousePressEvent(self, event):
 
@@ -67,9 +77,15 @@ class GameWindow(QMainWindow):
 
         super().__init__()
 
+        self.operations = ('+', '-', '*', '/')
+        self.current_level = 0
+        self.last_level = 2
+        self.time_data = []
+        self.round = QWidget()
+
         self.setWindowTitle('Level ' + str(level))
 
-        self.round_0 = RoundWindow()
+        self.round = QWidget()
 
         self.calculator_button = QPushButton('Show Calculator')
         self.calculator_button.clicked.connect(self.show_calculator)
@@ -84,15 +100,17 @@ class GameWindow(QMainWindow):
         self.button_row.setLayout(button_layout)
 
         self.central_widget = QWidget()
-        central_layout = QVBoxLayout()    
-        central_layout.addWidget(self.round_0)
-        central_layout.addWidget(self.button_row, alignment=Qt.AlignCenter)
-        self.central_widget.setLayout(central_layout)
+        self.central_layout = QVBoxLayout()    
+        self.central_layout.addWidget(self.round)
+        self.central_layout.addWidget(self.button_row, alignment=Qt.AlignCenter)
+        self.central_widget.setLayout(self.central_layout)
         self.setCentralWidget(self.central_widget)
+
+        self.next_level()
 
     def show_calculator(self):
 
-        self.round_0.submission_field.releaseKeyboard()
+        self.round.submission_field.releaseKeyboard()
         self.calc_window = calculator.Interface()
         calculator.Controller(model=calculator.arithmetic, view=self.calc_window)
         self.calc_window.show()
@@ -100,6 +118,46 @@ class GameWindow(QMainWindow):
     def quit(self):
 
         self.close()
+
+    def next_round(self):
+
+        if self.round_counter < 3:
+
+            operation = arithmetic.choice(self.operations)
+
+            x, y = arithmetic.int_selector(operation, self.current_level)
+
+            print(x, y, operation)
+
+            self.start_time = time()
+
+            self.round = RoundWindow(parent=self, operand_1=x, operand_2=y, operation=operation)
+            self.central_layout.insertWidget(0, self.round)
+            self.round.submission_field.setFocus()
+        
+        else:
+
+            self.current_level += 1
+            self.next_level()
+
+    def next_level(self):
+
+        self.round_counter = 0
+        self.round_times = []
+
+        if self.current_level <= self.last_level:
+
+            self.setWindowTitle('Level ' + str(self.current_level+1))
+            self.next_round()
+
+        else:
+
+            self.round.setParent(None)
+            del self.round
+            self.sweet_victory = QLabel('Oh, Happy Day')
+            self.sweet_victory.setFont(QFont('Jokerman', 25))
+            self.central_layout.insertWidget(0, self.sweet_victory)
+            
 
 def main():
 
