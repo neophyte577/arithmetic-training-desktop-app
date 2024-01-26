@@ -1,10 +1,11 @@
 from random import randint, choice
 from time import time
+from math import sqrt, ceil
 
 
-level_bounds = [ {'+':(1,25,1,25), '-':(1,25,1,24), '*':(2,5,1,5), '/':(1,10,1,5)},
-              {'+':(5,50,5,50), '-':(5,50,4,49), '*':(5,10,2,5), '/':(2,20,2,6)},
-              {'+':(5,100,5,100), '-':(5,100,4,99), '*':(10,20,2,10), '/':(2,40,3,10)} ]
+level_bounds = [ {'+':(1,25,1,25), '-':(1,25,1,24), '*':(2,5,1,5), '/':(2,10)},
+                 {'+':(5,50,5,50), '-':(5,50,4,49), '*':(5,10,2,5), '/':(6,30)},
+                 {'+':(5,100,5,100), '-':(5,100,4,99), '*':(10,20,2,10), '/':(20,100)} ]
 
 
 def isprime(n):
@@ -44,7 +45,9 @@ def int_selector(operation, current_level):
 
         div_list = []
 
-        for k in range(bounds[2],bounds[3]):
+        print(x, 'in div')
+
+        for k in range(2, ceil(sqrt(x))+1):
 
             if x % k == 0:
 
@@ -143,4 +146,5 @@ def main():
 
     print(time_data)
 
-main()
+if __name__ == '__main__':
+    main()

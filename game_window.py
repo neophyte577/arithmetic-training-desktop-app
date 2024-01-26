@@ -106,7 +106,7 @@ class GameWindow(QMainWindow):
         self.central_widget.setLayout(self.central_layout)
         self.setCentralWidget(self.central_widget)
 
-        self.next_level()
+        self.play_level()
 
     def show_calculator(self):
 
@@ -138,9 +138,9 @@ class GameWindow(QMainWindow):
         else:
 
             self.current_level += 1
-            self.next_level()
+            self.play_level()
 
-    def next_level(self):
+    def play_level(self):
 
         self.round_counter = 0
         self.round_times = []
@@ -154,10 +154,33 @@ class GameWindow(QMainWindow):
 
             self.round.setParent(None)
             del self.round
+
+            self.button_row.setParent(None)
+
             self.sweet_victory = QLabel('Oh, Happy Day')
             self.sweet_victory.setFont(QFont('Jokerman', 25))
+
+            self.reset_button = QPushButton('Play Again?')
+            self.reset_button.clicked.connect(self.reset_game)
+
             self.central_layout.insertWidget(0, self.sweet_victory)
-            
+            self.central_layout.insertWidget(1, self.reset_button)
+            self.central_layout.insertWidget(2, self.button_row)
+
+            self.central_widget.adjustSize()
+            self.adjustSize()
+
+    def reset_game(self):
+
+        self.sweet_victory.setParent(None)
+        del self.sweet_victory
+        
+        self.reset_button.setParent(None)
+        del self.reset_button
+
+        self.current_level = 0
+        self.play_level()
+
 
 def main():
 
