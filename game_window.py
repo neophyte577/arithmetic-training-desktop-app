@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QIntValidator, QFont
+from PySide6.QtGui import QIntValidator, QFont, QIcon
 from PySide6.QtWidgets import QWidget, QApplication, QMainWindow, QLineEdit, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
 from time import time
 import calculator
@@ -84,6 +84,7 @@ class GameWindow(QMainWindow):
         self.round = QWidget()
 
         self.setWindowTitle('Level ' + str(level))
+        self.setWindowIcon(QIcon('Icons/brain--plus.png'))
 
         self.round = QWidget()
 
@@ -127,7 +128,7 @@ class GameWindow(QMainWindow):
 
             x, y = arithmetic.int_selector(operation, self.current_level)
 
-            print(x, y, operation)
+            print(x, operation, y)
 
             self.start_time = time()
 
@@ -165,7 +166,9 @@ class GameWindow(QMainWindow):
 
             self.central_layout.insertWidget(0, self.sweet_victory)
             self.central_layout.insertWidget(1, self.reset_button)
-            self.central_layout.insertWidget(2, self.button_row)
+            self.central_layout.insertWidget(2, self.quit_button)
+
+            self.setWindowTitle('Fin')
 
             self.central_widget.adjustSize()
             self.adjustSize()

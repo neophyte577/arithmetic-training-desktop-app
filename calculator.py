@@ -1,6 +1,7 @@
 
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QLineEdit, QPushButton, QVBoxLayout
-from PySide6.QtCore import Qt, QObject, QEvent
 from functools import partial
 
 
@@ -40,7 +41,6 @@ class Controller:
     def connexions(self):
 
         for key, button in self.view.button_dict.items():
-
             if key not in {'C', '='}:
                 button.clicked.connect(partial(self.get_expr, key)) 
 
@@ -65,6 +65,7 @@ class Interface(QMainWindow):
         super().__init__()
 
         self.setWindowTitle('Calculadora')
+        self.setWindowIcon(QIcon('Icons/calculator.png'))
         self.setFixedSize(350, 350)
 
          # Display
