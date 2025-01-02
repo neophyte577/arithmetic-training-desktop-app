@@ -123,7 +123,6 @@ class GameWindow(QMainWindow):
     def next_round(self):
 
         if self.round_counter < 3:
-
             operation = arithmetic.choice(self.operations)
 
             x, y = arithmetic.int_selector(operation, self.current_level)
@@ -137,7 +136,6 @@ class GameWindow(QMainWindow):
             self.round.submission_field.setFocus()
         
         else:
-
             self.current_level += 1
             self.play_level()
 
@@ -147,12 +145,10 @@ class GameWindow(QMainWindow):
         self.round_times = []
 
         if self.current_level <= self.last_level:
-
             self.setWindowTitle('Level ' + str(self.current_level+1))
             self.next_round()
 
         else:
-
             self.round.setParent(None)
             del self.round
 

@@ -26,21 +26,16 @@ def int_selector(operation, current_level):
     bounds = level_bounds[current_level][operation]
     
     if operation in {'+', '-', '*'}:
- 
         x, y = randint(bounds[0], bounds[1]), randint(bounds[2], bounds[3])
-
         if operation == '-':
             if x < y:
                 x, y = y, x
 
     elif operation == '/':
-
         prime = True
 
         while prime == True:
-
             x = randint(bounds[0], bounds[1])
-
             prime = isprime(x)
 
         div_list = []
@@ -48,9 +43,7 @@ def int_selector(operation, current_level):
         print(x, 'in div')
 
         for k in range(2, ceil(sqrt(x))+1):
-
             if x % k == 0:
-
                 div_list.append(k)
 
         y = choice(div_list)
@@ -67,25 +60,16 @@ def round(operation, x, y, counter):
     start = time()
 
     while correct == False:
-
         try:
-
             n = int(input('Respuesta: '))
             print()
 
             if n == int(eval(str(x) + operation + str(y))):
-
-                print('Correcto')
-                print()
-                
+                print('Correcto\n')                
                 correct = True
-
                 stop = time()
-
                 latency = stop - start
-
                 round_time += latency
-
                 counter += 1
 
             else:
@@ -112,20 +96,16 @@ def main():
     time_data = []
 
     while current_level <= last_level:
-
         print('---------------')
         print('LEVEL', current_level+1)
         print('---------------')
         print()
 
         time_total = 0
-
         counter = 0
-
         level_times = []
 
         while counter < 3:
-
             operation = choice(operations)
 
             x, y = int_selector(operation, current_level)
